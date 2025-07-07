@@ -65,7 +65,7 @@ def test_basic_functionality():
         print("✅ Config creation successful")
         
         # Create tokenizer
-        tokenizer = TinyPeLLMTokenizer("tinypellm.model")
+        tokenizer = TinyPeLLMTokenizer()
         print("✅ Tokenizer creation successful")
         
         # Create model
