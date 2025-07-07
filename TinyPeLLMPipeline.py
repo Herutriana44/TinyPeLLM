@@ -44,7 +44,7 @@ def register_tiny_pellm():
         TOKENIZER_MAPPING.register(TinyPeLLMConfig, TinyPeLLMTokenizer)
         
         # Register model
-        AutoModelForCausalLM.register("tiny_pellm", TinyPeLLMForCausalLM)
+        AutoModelForCausalLM.register(TinyPeLLMConfig, TinyPeLLMForCausalLM)
         
         logger.info("TinyPeLLM successfully registered with Auto classes")
         
