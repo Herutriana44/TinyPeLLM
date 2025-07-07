@@ -12,7 +12,7 @@ def test_imports():
         print("✅ Config imports successful")
         
         # Test model imports
-        from TinyPeLLMModel_clean import TinyPeLLMForCausalLM, TinyPeLLMModel
+        from TinyPeLLMModel import TinyPeLLMForCausalLM, TinyPeLLMModel
         print("✅ Model imports successful")
         
         # Test tokenizer imports
@@ -52,7 +52,7 @@ def test_basic_functionality():
     try:
         # Import classes
         from TinyPeLLMConfig import TinyPeLLMConfig
-        from TinyPeLLMModel_clean import TinyPeLLMForCausalLM
+        from TinyPeLLMModel import TinyPeLLMForCausalLM
         from TinyPeLLMTokenizer import TinyPeLLMTokenizer
         from TinyPeLLMPipeline_simple import register_tiny_pellm
         

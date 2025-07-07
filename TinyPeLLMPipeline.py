@@ -26,7 +26,7 @@ import numpy as np
 
 # Import our custom classes
 from TinyPeLLMConfig import TinyPeLLMConfig
-from TinyPeLLMModel_clean import TinyPeLLMForCausalLM
+from TinyPeLLMModel import TinyPeLLMForCausalLM
 from TinyPeLLMTokenizer import TinyPeLLMTokenizer
 
 logger = logging.get_logger(__name__)

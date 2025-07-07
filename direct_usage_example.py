@@ -8,7 +8,7 @@ from transformers import pipeline
 
 # Direct imports (no auto registration needed)
 from TinyPeLLMConfig import TinyPeLLMConfig
-from TinyPeLLMModel_clean import TinyPeLLMForCausalLM
+from TinyPeLLMModel import TinyPeLLMForCausalLM
 from TinyPeLLMTokenizer import TinyPeLLMTokenizer
 
 
