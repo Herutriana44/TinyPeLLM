@@ -4,7 +4,7 @@ Demonstrates registration with Auto classes and pipeline usage
 """
 
 import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
+from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline, PreTrainedTokenizerFast
 from TinyPeLLMModel import TinyPeLLMConfig, TinyPeLLMForCausalLM
 from TinyPeLLMTokenizer import TinyPeLLMTokenizer
 from TinyPeLLMPipeline import register_tiny_pellm, TinyPeLLMTrainer, TinyPeLLMPipeline
@@ -32,16 +32,18 @@ def example_1_basic_registration():
     
     # Create model
     model = TinyPeLLMForCausalLM(config)
+
+    model.lm_head.weight = model.model.embed_tokens.weight
     
     # Save model and tokenizer
     model_path = "./tiny_pellm_model"
-    model.save_pretrained(model_path)
+    model.save_pretrained(model_path, safe_serialization=False)
     tokenizer.save_pretrained(model_path)
     
     print(f"Model saved to {model_path}")
     
     # Load using Auto classes
-    loaded_tokenizer = AutoTokenizer.from_pretrained(model_path)
+    loaded_tokenizer = PreTrainedTokenizerFast.from_pretrained(model_path)
     loaded_model = AutoModelForCausalLM.from_pretrained(model_path)
     
     print("Successfully loaded model and tokenizer using Auto classes!")

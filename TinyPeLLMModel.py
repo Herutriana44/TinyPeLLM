@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 import math
 from typing import Optional, Tuple, Union, List
-from transformers import PreTrainedModel, PretrainedConfig
+from transformers import PreTrainedModel, PretrainedConfig, GenerationMixin
 from transformers.modeling_outputs import CausalLMOutputWithPast
 from transformers.utils import logging
 
@@ -271,10 +271,8 @@ class TinyPeLLMModel(PreTrainedModel):
                 output_attentions=output_attentions,
             )
 
-            hidden_states = layer_outputs[0]
-
             if output_attentions:
-                all_self_attentions = all_self_attentions + (layer_outputs[1],)
+                all_self_attentions = all_self_attentions + (None,)
 
         hidden_states = self.norm(hidden_states)
 
@@ -285,7 +283,7 @@ class TinyPeLLMModel(PreTrainedModel):
             return tuple(v for v in [hidden_states, all_hidden_states, all_self_attentions] if v is not None)
 
         return CausalLMOutputWithPast(
-            last_hidden_state=hidden_states,
+            logits=hidden_states,
             hidden_states=all_hidden_states,
             attentions=all_self_attentions,
         )
@@ -316,7 +314,7 @@ class TinyPeLLMModel(PreTrainedModel):
         pass
 
 
-class TinyPeLLMForCausalLM(PreTrainedModel):
+class TinyPeLLMForCausalLM(PreTrainedModel, GenerationMixin):
     """
     TinyPeLLM model with language modeling head for causal language modeling
     """
@@ -330,8 +328,15 @@ class TinyPeLLMForCausalLM(PreTrainedModel):
         self.model = TinyPeLLMModel(config)
         self.lm_head = nn.Linear(config.hidden_size, config.vocab_size, bias=False)
 
+        # weight share
+        self.tie_weights()
+
         # Initialize weights and apply final processing
         self.post_init()
+
+    def tie_weights(self):
+        if self.config.tie_word_embeddings:
+            self._tie_or_clone_weights(self.lm_head, self.model.embed_tokens)
 
     def get_input_embeddings(self) -> nn.Module:
         return self.model.get_input_embeddings()
@@ -373,7 +378,7 @@ class TinyPeLLMForCausalLM(PreTrainedModel):
             return_dict=return_dict,
         )
 
-        hidden_states = outputs[0]
+        hidden_states = outputs.logits if return_dict else outputs[0]
         logits = self.lm_head(hidden_states)
 
         loss = None

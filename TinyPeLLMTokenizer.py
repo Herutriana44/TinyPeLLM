@@ -86,7 +86,7 @@ class TinyPeLLMTokenizer(PreTrainedTokenizerFast):
             ],
         )
 
-    def _create_tokenizer_from_vocab(self, vocab_file: str, merges_file: Optional[str] = None) -> HFTokenizer:
+    def _create_tokenizer_from_vocab(self, vocab_file: str = vocab_files_names["vocab_file"], merges_file: Optional[str] = vocab_files_names["merges_file"]) -> HFTokenizer:
         """
         Create a tokenizer from existing vocab and merges files
         """
