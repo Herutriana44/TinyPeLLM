@@ -7,7 +7,9 @@ import torch
 import torch.nn as nn
 import math
 from typing import Optional, Tuple, Union, List
-from transformers import PreTrainedModel, PretrainedConfig, GenerationMixin
+from transformers.modeling_utils import PreTrainedModel
+from transformers.configuration_utils import PretrainedConfig
+from transformers.generation.utils import GenerationMixin
 from transformers.modeling_outputs import CausalLMOutputWithPast
 from transformers.utils import logging
 
@@ -188,7 +190,7 @@ class TransformerBlock(nn.Module):
         return hidden_states
 
 
-class TinyPeLLMModel(PreTrainedModel):
+class TinyPeLLMModel(PreTrainedModel, GenerationMixin):
     """
     TinyPeLLM model implementation compatible with Hugging Face Transformers
     """
