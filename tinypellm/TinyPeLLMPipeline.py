@@ -55,7 +55,7 @@ if __name__ == "__main__":
     dataset = TinyTextDataset("tinypellm_corpus.txt", tokenizer)
     dataloader = DataLoader(dataset, batch_size=16, shuffle=True, collate_fn=collate_fn)
 
-    vocab_size = tokenizer.vocab_size()
+    vocab_size = tokenizer.vocab_size
     model = TinyPeLLM(vocab_size).to(device)
 
     optimizer = AdamW(model.parameters(), lr=2e-4)

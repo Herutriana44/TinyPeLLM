@@ -34,7 +34,7 @@ def demo_1_basic_setup():
     
     # Create tokenizer
     tokenizer = TinyPeLLMTokenizer()
-    print(f"✅ Tokenizer created with vocab size: {tokenizer.vocab_size()}")
+    print(f"✅ Tokenizer created with vocab size: {tokenizer.vocab_size}")
     
     # Create model
     model = TinyPeLLMForCausalLM(config)
