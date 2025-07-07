@@ -291,6 +291,7 @@ class TinyPeLLMTokenizer(PreTrainedTokenizerFast):
         """
         return self._tokenizer.get_vocab()
 
+    @property
     def vocab_size(self) -> int:
         """
         Get the vocabulary size

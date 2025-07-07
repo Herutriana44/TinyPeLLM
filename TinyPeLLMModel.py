@@ -131,6 +131,9 @@ class MultiQueryAttention(nn.Module):
 
         # Apply attention mask if provided
         if attention_mask is not None:
+            # Reshape attention mask to match attention scores shape
+            # attention_mask: (batch_size, seq_length) -> (batch_size, 1, 1, seq_length)
+            attention_mask = attention_mask.unsqueeze(1).unsqueeze(2)
             attn_scores = attn_scores.masked_fill(attention_mask == 0, float('-inf'))
 
         attn_probs = torch.softmax(attn_scores, dim=-1)

@@ -41,7 +41,8 @@ def register_tiny_pellm():
         AutoConfig.register("tiny_pellm", TinyPeLLMConfig)
         
         # Register tokenizer - FIXED: Use proper registration for fast tokenizer
-        AutoTokenizer.register(TinyPeLLMConfig, TinyPeLLMTokenizer)
+        from transformers.models.auto.tokenization_auto import TOKENIZER_MAPPING
+        TOKENIZER_MAPPING.register(TinyPeLLMConfig, (TinyPeLLMTokenizer, None))
         
         # Register model
         AutoModelForCausalLM.register(TinyPeLLMConfig, TinyPeLLMForCausalLM)
@@ -122,13 +123,15 @@ class TinyPeLLMTrainer:
         # Create model
         self.model = TinyPeLLMForCausalLM(self.config)
         
+        # Tie weights
+        self.model.lm_head.weight = self.model.model.embed_tokens.weight
+        
         return self.model, self.tokenizer
     
     def prepare_dataset(
         self,
         data_path: str,
         block_size: int = 128,
-        overwrite_cache: bool = False,
         **kwargs
     ) -> Dataset:
         """
@@ -142,7 +145,6 @@ class TinyPeLLMTrainer:
                     tokenizer=self.tokenizer,
                     file_path=data_path,
                     block_size=block_size,
-                    overwrite_cache=overwrite_cache,
                 )
             else:
                 raise ValueError(f"Unsupported file extension: {extension}")
@@ -152,7 +154,6 @@ class TinyPeLLMTrainer:
                 tokenizer=self.tokenizer,
                 file_path=data_path,
                 block_size=block_size,
-                overwrite_cache=overwrite_cache,
             )
         
         return dataset
@@ -229,6 +230,10 @@ class TinyPeLLMTrainer:
         """
         if self.trainer is not None:
             self.trainer.save_model(output_dir)
+        
+        # Also save model directly with safe_serialization=False for weight tying
+        if hasattr(self, 'model') and self.model is not None:
+            self.model.save_pretrained(output_dir, safe_serialization=False)
         
         # Save tokenizer
         if self.tokenizer is not None:
