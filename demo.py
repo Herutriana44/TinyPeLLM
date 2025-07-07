@@ -88,7 +88,7 @@ def demo_3_save_and_load():
     
     with tempfile.TemporaryDirectory() as temp_dir:
         # Save model and tokenizer
-        model.save_pretrained(temp_dir)
+        model.save_pretrained(temp_dir, safe_serialization=False)
         tokenizer.save_pretrained(temp_dir)
         print(f"✅ Model and tokenizer saved to {temp_dir}")
         
@@ -119,7 +119,7 @@ def demo_4_pipeline_integration():
     
     with tempfile.TemporaryDirectory() as temp_dir:
         # Save model and tokenizer
-        model.save_pretrained(temp_dir)
+        model.save_pretrained(temp_dir, safe_serialization=False)
         tokenizer.save_pretrained(temp_dir)
         
         # Create Hugging Face pipeline

@@ -69,9 +69,11 @@ def example_2_pipeline_usage():
     
     tokenizer = TinyPeLLMTokenizer()
     model = TinyPeLLMForCausalLM(config)
+
+    model.lm_head.weight = model.model.embed_tokens.weight
     
     model_path = "./tiny_pellm_pipeline_model"
-    model.save_pretrained(model_path)
+    model.save_pretrained(model_path, safe_serialization=False)
     tokenizer.save_pretrained(model_path)
     
     # Create pipeline
@@ -117,9 +119,11 @@ def example_3_custom_pipeline():
     
     tokenizer = TinyPeLLMTokenizer()
     model = TinyPeLLMForCausalLM(config)
+
+    model.lm_head.weight = model.model.embed_tokens.weight
     
     model_path = "./tiny_pellm_custom_pipeline"
-    model.save_pretrained(model_path)
+    model.save_pretrained(model_path, safe_serialization=False)
     tokenizer.save_pretrained(model_path)
     
     # Use custom pipeline
@@ -245,10 +249,13 @@ def example_5_advanced_usage():
     print(f"Input shape: {inputs['input_ids'].shape}")
     print(f"Output shape: {outputs.logits.shape}")
     print(f"Model parameters: {sum(p.numel() for p in model.parameters()):,}")
+
+
+    model.lm_head.weight = model.model.embed_tokens.weight
     
     # Save and load
     model_path = "./tiny_pellm_advanced"
-    model.save_pretrained(model_path)
+    model.save_pretrained(model_path, safe_serialization=False)
     tokenizer.save_pretrained(model_path)
     
     # Load using Auto classes

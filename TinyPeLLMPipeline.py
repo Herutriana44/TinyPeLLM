@@ -18,7 +18,7 @@ from transformers import (
     TextDataset,
     LineByLineTextDataset
 )
-from transformers.models.auto.tokenization_auto import TOKENIZER_MAPPING
+
 from transformers.pipelines import PIPELINE_REGISTRY
 from transformers.utils import logging
 from datasets import Dataset
@@ -41,7 +41,7 @@ def register_tiny_pellm():
         AutoConfig.register("tiny_pellm", TinyPeLLMConfig)
         
         # Register tokenizer - FIXED: Use proper registration for fast tokenizer
-        TOKENIZER_MAPPING.register(TinyPeLLMConfig, TinyPeLLMTokenizer)
+        AutoTokenizer.register(TinyPeLLMConfig, TinyPeLLMTokenizer)
         
         # Register model
         AutoModelForCausalLM.register(TinyPeLLMConfig, TinyPeLLMForCausalLM)

@@ -124,7 +124,7 @@ class TestTinyPeLLMModel(unittest.TestCase):
         model = TinyPeLLMForCausalLM(config)
         
         with tempfile.TemporaryDirectory() as temp_dir:
-            model.save_pretrained(temp_dir)
+            model.save_pretrained(temp_dir, safe_serialization=False)
             
             # Check if files were created
             self.assertTrue(os.path.exists(os.path.join(temp_dir, "config.json")))
@@ -171,7 +171,7 @@ class TestAutoRegistration(unittest.TestCase):
         model = TinyPeLLMForCausalLM(config)
         
         with tempfile.TemporaryDirectory() as temp_dir:
-            model.save_pretrained(temp_dir)
+            model.save_pretrained(temp_dir, safe_serialization=False)
             
             # Should be able to load with AutoModelForCausalLM
             loaded_model = AutoModelForCausalLM.from_pretrained(temp_dir)
@@ -191,7 +191,7 @@ class TestPipeline(unittest.TestCase):
         model = TinyPeLLMForCausalLM(config)
         
         with tempfile.TemporaryDirectory() as temp_dir:
-            model.save_pretrained(temp_dir)
+            model.save_pretrained(temp_dir, safe_serialization=False)
             tokenizer.save_pretrained(temp_dir)
             
             # Create pipeline
@@ -208,7 +208,7 @@ class TestPipeline(unittest.TestCase):
         model = TinyPeLLMForCausalLM(config)
         
         with tempfile.TemporaryDirectory() as temp_dir:
-            model.save_pretrained(temp_dir)
+            model.save_pretrained(temp_dir, safe_serialization=False)
             tokenizer.save_pretrained(temp_dir)
             
             # Create custom pipeline
@@ -256,7 +256,7 @@ class TestIntegration(unittest.TestCase):
         
         with tempfile.TemporaryDirectory() as temp_dir:
             # Save model and tokenizer
-            model.save_pretrained(temp_dir)
+            model.save_pretrained(temp_dir, safe_serialization=False)
             tokenizer.save_pretrained(temp_dir)
             
             # Load with Auto classes
