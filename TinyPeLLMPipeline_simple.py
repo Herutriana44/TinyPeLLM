@@ -1,6 +1,6 @@
 """
-TinyPeLLM Pipeline and Trainer Implementation for Hugging Face Transformers
-Provides registration with Auto classes and training utilities
+TinyPeLLM Pipeline - Simplified Version
+Without complex auto registration to avoid tokenizer issues
 """
 
 import os
@@ -18,8 +18,6 @@ from transformers import (
     TextDataset,
     LineByLineTextDataset
 )
-from transformers.models.auto.tokenization_auto import TOKENIZER_MAPPING
-from transformers.pipelines import PIPELINE_REGISTRY
 from transformers.utils import logging
 from datasets import Dataset
 import numpy as np
@@ -34,14 +32,11 @@ logger = logging.get_logger(__name__)
 
 def register_tiny_pellm():
     """
-    Register TinyPeLLM model and tokenizer with Auto classes
+    Register TinyPeLLM model with Auto classes (simplified)
     """
     try:
         # Register config
         AutoConfig.register("tiny_pellm", TinyPeLLMConfig)
-        
-        # Register tokenizer - FIXED: Use proper registration for fast tokenizer
-        TOKENIZER_MAPPING.register(TinyPeLLMConfig, TinyPeLLMTokenizer)
         
         # Register model
         AutoModelForCausalLM.register("tiny_pellm", TinyPeLLMForCausalLM)
@@ -117,7 +112,7 @@ class TinyPeLLMTrainer:
         
         # Create tokenizer if not provided
         if self.tokenizer is None:
-            self.tokenizer = TinyPeLLMTokenizer()
+            self.tokenizer = TinyPeLLMTokenizer("tinypellm.model")
         
         # Create model
         self.model = TinyPeLLMForCausalLM(self.config)
@@ -245,7 +240,7 @@ class TinyPeLLMTrainer:
         Load a trained model
         """
         self.model = AutoModelForCausalLM.from_pretrained(model_path)
-        self.tokenizer = AutoTokenizer.from_pretrained(model_path)
+        self.tokenizer = TinyPeLLMTokenizer.from_pretrained(model_path)
         self.config = AutoConfig.from_pretrained(model_path)
         
         return self.model, self.tokenizer
@@ -325,29 +320,6 @@ class TinyPeLLMPipeline:
         return generated_texts
 
 
-# Register custom pipeline (fixed version)
-def tiny_pellm_pipeline(
-    model,
-    tokenizer,
-    **kwargs
-):
-    """
-    Custom pipeline for TinyPeLLM text generation
-    """
-    return pipeline(
-        "text-generation",
-        model=model,
-        tokenizer=tokenizer,
-        **kwargs
-    )
-
-# Register the pipeline function
-try:
-    PIPELINE_REGISTRY.register_pipeline("text-generation-tiny-pellm", tiny_pellm_pipeline)
-except Exception as e:
-    logger.warning(f"Could not register custom pipeline: {e}")
-
-
 def main():
     """
     Example usage of TinyPeLLM training and inference
@@ -395,4 +367,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main() 
