@@ -1,0 +1,10 @@
+{
+  "tokenizer_class": "TinyPeLLMTokenizer",
+  "unk_token": "<unk>",
+  "bos_token": "<s>",
+  "eos_token": "</s>",
+  "pad_token": "<pad>",
+  "cls_token": "<cls>",
+  "mask_token": "<mask>",
+  "sep_token": "<sep>"
+}

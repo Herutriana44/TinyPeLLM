@@ -31,6 +31,30 @@ from TinyPeLLMTokenizer import TinyPeLLMTokenizer
 
 logger = logging.get_logger(__name__)
 
+class TinyPeLLMPipeline:
+    """
+    Custom pipeline class for TinyPeLLM
+    """
+    def __init__(self, model, tokenizer=None, device=None, task=None, **kwargs):
+        self.model = model
+        self.tokenizer = tokenizer
+        self.device = device
+        self.task = task
+
+    
+    def __call__(self, text, max_length=100, num_return_sequences=1, temperature=1.0, top_p=1.0, do_sample=True, **kwargs):
+        inputs = self.tokenizer(text, return_tensors="pt").to(self.model.device)
+        outputs = self.model.generate(
+            **inputs,
+            max_length=max_length,
+            num_return_sequences=num_return_sequences,
+            temperature=temperature,
+            top_p=top_p,
+            do_sample=do_sample,
+            **kwargs
+        )
+        return self.tokenizer.batch_decode(outputs, skip_special_tokens=True)
+
 
 def register_tiny_pellm():
     """
@@ -79,7 +103,6 @@ class TinyPeLLMTrainer:
     """
     def __init__(
         self,
-        model_name_or_path: Optional[str] = None,
         config: Optional[TinyPeLLMConfig] = None,
         tokenizer: Optional[TinyPeLLMTokenizer] = None,
         **kwargs
@@ -257,7 +280,6 @@ class TinyPeLLMTrainer:
 
 
 def create_tiny_pellm_pipeline(
-    model_name_or_path: str,
     device: Optional[int] = None,
     **kwargs
 ):
@@ -279,57 +301,6 @@ def create_tiny_pellm_pipeline(
     )
     
     return pipe
-
-
-class TinyPeLLMPipeline:
-    """
-    Custom pipeline class for TinyPeLLM
-    """
-    def __init__(
-        self,
-        model_name_or_path: str,
-        device: Optional[int] = None,
-        **kwargs
-    ):
-        self.model_name_or_path = model_name_or_path
-        self.device = device
-        self.pipe = create_tiny_pellm_pipeline(model_name_or_path, device, **kwargs)
-    
-    def generate(
-        self,
-        text: str,
-        max_length: int = 100,
-        num_return_sequences: int = 1,
-        temperature: float = 1.0,
-        top_p: float = 1.0,
-        do_sample: bool = True,
-        **kwargs
-    ) -> List[str]:
-        """
-        Generate text using the pipeline
-        """
-        outputs = self.pipe(
-            text,
-            max_length=max_length,
-            num_return_sequences=num_return_sequences,
-            temperature=temperature,
-            top_p=top_p,
-            do_sample=do_sample,
-            **kwargs
-        )
-        
-        # Extract generated text
-        generated_texts = []
-        for output in outputs:
-            if isinstance(output, list):
-                for seq in output:
-                    generated_texts.append(seq['generated_text'])
-            else:
-                generated_texts.append(output['generated_text'])
-        
-        return generated_texts
-
-
 # Register custom pipeline (fixed version)
 def tiny_pellm_pipeline(
     model,

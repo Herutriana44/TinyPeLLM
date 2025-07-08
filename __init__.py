@@ -4,7 +4,7 @@ TinyPeLLM - A lightweight language model with Hugging Face Transformers integrat
 
 __version__ = "0.1.0"
 __author__ = "TinyPeLLM Team"
-__email__ = "contact@tinypellm.com"
+__email__ = "herutriana44@gmail.com"
 
 # Import main classes
 from .TinyPeLLMModel import TinyPeLLMConfig, TinyPeLLMForCausalLM, TinyPeLLMModel
